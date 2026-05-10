@@ -6,8 +6,10 @@ src/sistema.c \
 src/cliente.c \
 src/pedido.c \
 src/item.c \
--Iinclude \
+src/fila.c \
+-Iinclude -lpthread \
 -o app
+
 
 if [ $? -eq 0 ]; then
     ./app

@@ -43,6 +43,8 @@ Sistema iniciar() {
     s.quantidade_pedidos = 0;
     s.quantidade_itens = 0;
 
+    fila_inicializar(&s.fila_pedidos);
+
     return s;
 }
 
@@ -144,6 +146,10 @@ void cadastrar_pedido(Sistema *s) {
 
     s->quantidade_pedidos++;
 
+    fila_inserir(
+    &s->fila_pedidos,
+    pedido
+    );
     printf("Pedido criado com sucesso.\n");
 }
 
@@ -200,5 +206,35 @@ void mostrar_dados(Sistema *s) {
         printf("Status: %d\n", p.status);
     }
 
+    printf("\n");
+    printf("========== FILA ==========\n");
+
+    Fila *fila = &s->fila_pedidos;
+
+    printf("Inicio: %d\n", fila->fila_inicio);
+    printf("Fim: %d\n", fila->fila_fim);
+    printf("Quantidade: %d\n", fila->quantidade);
+
+    if (fila_esta_vazia(fila)) {
+        printf("Fila vazia.\n");
+    } else {
+
+        int indice = fila->fila_inicio;
+
+        for (int i = 0; i < fila->quantidade; i++) {
+
+            Pedido p = fila->pedidos[indice];
+
+            printf("\n");
+            printf("POSICAO FILA: %d\n", indice);
+            printf("Pedido ID: %d\n", p.id);
+            printf("Cliente ID: %d\n", p.cliente_id);
+            printf("Item ID: %d\n", p.item_id);
+            printf("Status: %d\n", p.status);
+
+            indice =
+                (indice + 1) % TAMANHO_FILA;
+        }
+    }
     printf("\n");
 }

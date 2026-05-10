@@ -4,6 +4,8 @@
 #include "cliente.h"
 #include "pedido.h"
 #include "item.h"
+#include "fila.h"
+
 
 #define MAX_CLIENTES 100
 #define MAX_PEDIDOS 100
@@ -13,7 +15,7 @@ typedef struct {
     Cliente clientes[MAX_CLIENTES];
     Pedido pedidos[MAX_PEDIDOS];
     Item itens[MAX_ITENS];
-
+    Fila fila_pedidos;
     int quantidade_clientes;
     int quantidade_pedidos;
     int quantidade_itens;

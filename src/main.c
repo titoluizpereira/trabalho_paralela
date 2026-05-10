@@ -47,7 +47,8 @@ int main() {
             case 5:
                 printf("Data:");
                 mostrar_dados(&sistema);
-
+                break;
+                
                 case 0:
                 printf("Encerrando sistema...\n");
                 break;
