@@ -1,4 +1,8 @@
-typedef enum {
+#ifndef PEDIDO_H
+#define PEDIDO_H
+
+typedef enum
+{
     PEDIDO_CRIADO,
     PEDIDO_VALIDADO,
     CLIENTE_VALIDADO,
@@ -6,7 +10,7 @@ typedef enum {
     ERRO_FINANCEIRO,
     ERRO_LOGISTICA,
     PEDIDO_REALIZADO,
-} Status_Pedido
+} Status_Pedido;
 
 typedef struct {
     int id;
@@ -15,4 +19,6 @@ typedef struct {
     Status_Pedido status;
 } Pedido;
 
-Pedido criar_pedido(int cliente_id, int item_id);
+Pedido criar_pedido(int id, int cliente_id, int item_id);
+
+#endif
