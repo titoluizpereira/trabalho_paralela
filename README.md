@@ -4,7 +4,7 @@ Trabalho realizado para a disciplina Programação Paralela e Distribuída (INE5
 
 O projeto simula um sistema de fluxo de vendas. Foi desenvolvido em linguagem C utilizando POSIX Threads (`pthread`) para figurar um ambiente concorrente de processamento de pedidos.
 
-Na simulação, os cliente realizam pedidos que passam por múltiplas e independentes etapas de processamento, como validção do pedido, análise financeira e processamento logístico. 
+Na simulação, os cliente realizam pedidos que passam por múltiplas e independentes etapas de processamento, como validação do pedido, análise financeira e processamento logístico. 
 
 O sistema foi desenvolvido com foco na aplicação de conceitos de programação paralela, sincronização entre threads e comunicação concorrente através de filas compartilhadas.
 
