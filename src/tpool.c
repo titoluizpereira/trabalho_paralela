@@ -1,3 +1,4 @@
+/*
 #include "tpool.h"
 #include <pthread.h>
 
@@ -185,4 +186,157 @@ void tpool_wait(tpool_t *tm) {
         }
     }
     pthread_mutex_unlock(&(tm->work_mutex));
+}
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "tpool.h"
+#include "financeiro.h"
+#include "logistica.h"
+
+
+static void processar_pedido(Pedido *pedido) {
+
+    printf(
+        "\n[WORKER] Processando pedido %d\n",
+        pedido->id
+    );
+
+    sleep(1);
+
+    int financeiro_aprovado =
+        validar_financeiro(
+            pedido,
+            0.2
+        );
+
+    if (!financeiro_aprovado) {
+
+        pedido->status =
+            ERRO_FINANCEIRO;
+
+        printf(
+            "[WORKER] Pedido %d finalizado com erro financeiro\n",
+            pedido->id
+        );
+
+        return;
+    }
+
+    pedido->status =
+        PEDIDO_FINANCEIRO_APROVADO;
+
+    sleep(1);
+
+    int logistica_aprovada =
+        validar_logistica(
+            pedido,
+            0.2
+        );
+
+    if (!logistica_aprovada) {
+
+        pedido->status =
+            ERRO_LOGISTICA;
+
+        printf(
+            "[WORKER] Pedido %d finalizado com erro logistica\n",
+            pedido->id
+        );
+
+        return;
+    }
+
+    pedido->status =
+        PEDIDO_REALIZADO;
+
+    printf(
+        "[WORKER] Pedido %d concluido com sucesso\n",
+        pedido->id
+    );
+}
+
+static void *worker(void *arg) {
+    ThreadPool *pool =
+        (ThreadPool *) arg;
+
+    while (!pool->parar) {
+
+        Pedido pedido =
+            fila_remover(pool->fila);
+
+        processar_pedido(&pedido);
+    }
+
+    return NULL;
+}
+
+ThreadPool *tpool_criar(
+    int quantidade_threads,
+    Fila *fila
+) {
+    ThreadPool *pool =
+        malloc(sizeof(ThreadPool));
+
+    pool->quantidade_threads =
+        quantidade_threads;
+
+    pool->fila = fila;
+
+    pool->parar = false;
+
+    pool->threads =
+        malloc(
+            sizeof(pthread_t)
+            * quantidade_threads
+        );
+
+    for (
+        int i = 0;
+        i < quantidade_threads;
+        i++
+    ) {
+        pthread_create(
+            &pool->threads[i],
+            NULL,
+            worker,
+            pool
+        );
+    }
+
+    return pool;
+}
+
+void tpool_destruir(
+    ThreadPool *pool
+) {
+    pool->parar = true;
+
+    for (
+        int i = 0;
+        i < pool->quantidade_threads;
+        i++
+    ) {
+        pthread_cond_broadcast(
+            &pool->fila->condicao_n_vazia
+        );
+    }
+
+    for (
+        int i = 0;
+        i < pool->quantidade_threads;
+        i++
+    ) {
+        pthread_join(
+            pool->threads[i],
+            NULL
+        );
+    }
+
+    free(pool->threads);
+
+    free(pool);
 }

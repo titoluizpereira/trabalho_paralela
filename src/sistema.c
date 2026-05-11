@@ -44,7 +44,7 @@ Sistema iniciar() {
     s.quantidade_itens = 0;
 
     fila_inicializar(&s.fila_pedidos);
-
+    s.pool = NULL;
     return s;
 }
 

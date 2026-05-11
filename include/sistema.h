@@ -5,7 +5,7 @@
 #include "pedido.h"
 #include "item.h"
 #include "fila.h"
-
+#include "tpool.h"
 
 #define MAX_CLIENTES 100
 #define MAX_PEDIDOS 100
@@ -16,6 +16,7 @@ typedef struct {
     Pedido pedidos[MAX_PEDIDOS];
     Item itens[MAX_ITENS];
     Fila fila_pedidos;
+    ThreadPool *pool;
     int quantidade_clientes;
     int quantidade_pedidos;
     int quantidade_itens;

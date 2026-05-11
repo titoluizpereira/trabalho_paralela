@@ -8,7 +8,7 @@ static void mostrar_menu() {
     printf("1 - Cadastrar cliente\n");
     printf("2 - Cadastrar item\n");
     printf("3 - Novo pedido\n");
-    printf("4 - Iniciar entregas\n");
+    //printf("4 - Iniciar entregas\n");
     printf("5 - Mostrar Dados\n");
     printf("0 - Sair\n");
     printf("\n");
@@ -18,6 +18,8 @@ static void mostrar_menu() {
 
 int main() {
     Sistema sistema = iniciar();
+
+    sistema.pool = tpool_criar(4, &sistema.fila_pedidos);
 
     int opcao;
 
@@ -40,10 +42,6 @@ int main() {
                 cadastrar_pedido(&sistema);
                 break;
 
-            case 4:
-                printf("Funcionalidade ainda nao implementada.\n");
-                break;
-            
             case 5:
                 printf("Data:");
                 mostrar_dados(&sistema);
@@ -59,6 +57,10 @@ int main() {
         }
 
     } while (opcao != 0);
+
+    if (sistema.pool != NULL) {
+        tpool_destruir(sistema.pool);
+    }
 
     return 0;
 }

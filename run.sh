@@ -7,6 +7,9 @@ src/cliente.c \
 src/pedido.c \
 src/item.c \
 src/fila.c \
+src/tpool.c \
+src/financeiro.c \
+src/logistica.c \
 -Iinclude -lpthread \
 -o app
 
