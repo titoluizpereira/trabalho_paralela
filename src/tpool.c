@@ -224,6 +224,9 @@ static void processar_pedido(Pedido *pedido) {
             pedido->id
         );
 
+        printf("\nEscolha uma opcao: ");
+        fflush(stdout);
+
         return;
     }
 
@@ -248,6 +251,9 @@ static void processar_pedido(Pedido *pedido) {
             pedido->id
         );
 
+        printf("\nEscolha uma opcao: ");
+        fflush(stdout);
+
         return;
     }
 
@@ -271,6 +277,9 @@ static void processar_pedido(Pedido *pedido) {
             "[WORKER] Pedido %d finalizado com erro logistica\n",
             pedido->id
         );
+
+        printf("\nEscolha uma opcao: ");
+        fflush(stdout);
 
         return;
     }
