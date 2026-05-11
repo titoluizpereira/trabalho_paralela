@@ -2,7 +2,7 @@
 #define FILA_H
 
 #include <pthread.h>
-
+#include <stdbool.h>
 #include "pedido.h"
 
 #define TAMANHO_FILA 8
@@ -13,6 +13,8 @@ typedef struct {
     int fila_inicio;
     int fila_fim;
     int quantidade;
+
+    bool encerrada;
 
     pthread_mutex_t mutex;
 
@@ -33,6 +35,8 @@ Pedido fila_remover(Fila *fila);
 int fila_esta_vazia(Fila *fila);
 
 int fila_esta_cheia(Fila *fila);
+
+void fila_encerrar(Fila *fila);
 
 void fila_destruir(Fila *fila);
 

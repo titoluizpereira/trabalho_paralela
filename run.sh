@@ -8,6 +8,7 @@ src/pedido.c \
 src/item.c \
 src/fila.c \
 src/tpool.c \
+src/validacao.c \
 src/financeiro.c \
 src/logistica.c \
 -Iinclude -lpthread \

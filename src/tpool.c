@@ -194,6 +194,7 @@ void tpool_wait(tpool_t *tm) {
 #include <unistd.h>
 
 #include "tpool.h"
+#include "validacao.h"
 #include "financeiro.h"
 #include "logistica.h"
 
@@ -204,6 +205,30 @@ static void processar_pedido(Pedido *pedido) {
         "\n[WORKER] Processando pedido %d\n",
         pedido->id
     );
+
+    sleep(1);
+
+    int pedido_valido =
+        validar_pedido(
+            pedido,
+            0.2
+        );
+
+    if (!pedido_valido) {
+
+        pedido->status =
+            ERRO_VALIDADE;
+
+        printf(
+            "[WORKER] Pedido %d finalizado com erro de validacao\n",
+            pedido->id
+        );
+
+        return;
+    }
+
+    pedido->status =
+        PEDIDO_VALIDADO;
 
     sleep(1);
 
@@ -263,10 +288,14 @@ static void *worker(void *arg) {
     ThreadPool *pool =
         (ThreadPool *) arg;
 
-    while (!pool->parar) {
+    while (true) {
 
         Pedido pedido =
             fila_remover(pool->fila);
+
+        if (pedido.id == -1) {
+            break;
+        }
 
         processar_pedido(&pedido);
     }
@@ -315,15 +344,7 @@ void tpool_destruir(
 ) {
     pool->parar = true;
 
-    for (
-        int i = 0;
-        i < pool->quantidade_threads;
-        i++
-    ) {
-        pthread_cond_broadcast(
-            &pool->fila->condicao_n_vazia
-        );
-    }
+    fila_encerrar(pool->fila);
 
     for (
         int i = 0;

@@ -6,6 +6,7 @@ void fila_inicializar(Fila *fila) {
     fila->fila_inicio = 0;
     fila->fila_fim = 0;
     fila->quantidade = 0;
+    fila->encerrada = false;
 
     pthread_mutex_init(
         &fila->mutex,
@@ -56,20 +57,39 @@ void fila_inserir(Fila *fila,Pedido pedido) {
 }
 
 Pedido fila_remover(Fila *fila) {
+
     pthread_mutex_lock(&fila->mutex);
 
-    while (fila_esta_vazia(fila)) {
+    while (
+        fila_esta_vazia(fila)
+        && !fila->encerrada
+    ) {
+
         pthread_cond_wait(
             &fila->condicao_n_vazia,
             &fila->mutex
         );
     }
 
+    if (
+        fila_esta_vazia(fila)
+        && fila->encerrada
+    ) {
+
+        pthread_mutex_unlock(&fila->mutex);
+
+        Pedido pedido_vazio;
+        pedido_vazio.id = -1;
+
+        return pedido_vazio;
+    }
+
     Pedido pedido =
         fila->pedidos[fila->fila_inicio];
 
     fila->fila_inicio =
-        (fila->fila_inicio + 1) % TAMANHO_FILA;
+        (fila->fila_inicio + 1)
+        % TAMANHO_FILA;
 
     fila->quantidade--;
 
@@ -80,6 +100,17 @@ Pedido fila_remover(Fila *fila) {
     pthread_mutex_unlock(&fila->mutex);
 
     return pedido;
+}
+
+void fila_encerrar(Fila *fila) {
+    pthread_mutex_lock(&fila->mutex);
+
+    fila->encerrada = true;
+
+    pthread_cond_broadcast(&fila->condicao_n_vazia);
+    pthread_cond_broadcast(&fila->condicao_n_cheia);
+
+    pthread_mutex_unlock(&fila->mutex);
 }
 
 void fila_destruir(Fila *fila) {
