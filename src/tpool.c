@@ -282,6 +282,9 @@ static void processar_pedido(Pedido *pedido) {
         "[WORKER] Pedido %d concluido com sucesso\n",
         pedido->id
     );
+
+    printf("\nEscolha uma opcao: ");
+    fflush(stdout);
 }
 
 static void *worker(void *arg) {
